@@ -4,11 +4,15 @@
 
 - Maintenance Page
 
-  When the file `/usr/share/nginx/html/maintenance.html` exists Nginx will return its content for all requests with the status code `503` (service temporarily unavailable).
+  When the file `/usr/share/nginx/html/maintenance-mode` exists Nginx will return the content of `/usr/share/nginx/html/maintenance.html` together with the status code `503` (service temporarily unavailable).
 
   The maintenance mode can be enabled through the following HTTP request:
 
-        curl -XPUT localhost/maintenance.html -d ''
+        curl -XPUT -u czerasz:password1234567890 localhost/maintenance-mode -d ''
+
+  The maintenance mode can be disabled with the following HTTP request:
+
+        curl -XDELETE -u czerasz:password1234567890 localhost/maintenance-mode
 
 ## Test
 
@@ -23,6 +27,10 @@ This script is runs test based on [bats](https://github.com/sstephenson/bats) in
 - reload Nginx
     
         kill -HUP `cat /var/run/nginx.pid`
+
+- generate the `/etc/nginx/htpasswd` file with base auth credentials
+    
+        htpasswd -cb /etc/nginx/htpasswd 'czerasz' 'password1234567890'
 
 ## Requirements
 
