@@ -20,8 +20,8 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
-@test "Nginx is installed in version 1.6.2" {
+@test "Nginx is installed in version 1.7.7" {
   run /usr/sbin/nginx -v
 
-  [[ "$output" =~ "1.6.2"  ]]
+  [[ "$output" =~ "1.7.7"  ]]
 }
