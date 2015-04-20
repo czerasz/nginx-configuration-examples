@@ -2,7 +2,7 @@
 
 ## Features
 
-- Maintenance Page
+- Maintenance Mode
 
   When the file `/usr/share/nginx/html/maintenance-mode` exists Nginx will return the content of `/usr/share/nginx/html/maintenance.html` together with the status code `503` (service temporarily unavailable).
 
