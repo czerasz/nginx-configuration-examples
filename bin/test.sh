@@ -11,5 +11,5 @@ docker rm -f nginx-configuration-example &>/dev/null
 
 # Start a new container
 docker run --name nginx-configuration-example \
-           -it --rm=true \
+           --rm=true \
            czerasz/nginx-configuration-example bats /nginx.bats
