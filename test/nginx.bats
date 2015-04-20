@@ -6,7 +6,8 @@ wait_for_nginx() {
   
   while ! pgrep -xf "nginx: worker process" > /dev/null ;
   do
-    echo 'sleep'
+    echo 'wait for nginx'
+
     sleep 0.1;
   done
 }
@@ -32,5 +33,36 @@ teardown() {
 
   result="$(curl -Is http://localhost/ | head -n1 | awk '{print $2}')"
 
-  [[ $result -eq '502' ]]
+  [[ "$result" -eq '502' ]]
+}
+
+maintenance_file_path=/usr/share/nginx/html/maintenance.html
+
+@test "Nginx should be in maintenance mode if the $maintenance_file_path exists" {
+  wait_for_nginx
+
+  touch $maintenance_file_path
+  
+  run bash -c "curl -s -w '%{http_code}' http://localhost/ -o /dev/null"
+
+
+  [[ "$output" -eq '503' ]]
+
+  rm $maintenance_file_path
+}
+
+@test "Allow the client to create the $maintenance_file_path file" {
+  wait_for_nginx
+
+  run bash -c "curl -s -w '%{http_code}' -XPUT localhost/maintenance.html -d '' -o /dev/null"
+
+  [[ "$output" -eq '201' ]]
+
+  if [ -f "$maintenance_file_path" ]; then
+    [[ 0 -eq 0 ]]
+  else
+    [[ 1 -eq 0 ]]
+  fi
+
+  rm $maintenance_file_path
 }
